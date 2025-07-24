@@ -332,17 +332,7 @@ export class Game {
    * @returns {number}
    */
   getScore() {
-    let Score = 0;
-
-    for (let i = 1; i <= 16; i++) {
-      const cellSort = document.querySelector(`.cell-${i}`);
-
-      const cellScore = Number(cellSort.textContent);
-
-      Score += cellScore;
-    }
-
-    return Score;
+    return this.score;
   }
 
   /**
@@ -378,25 +368,26 @@ export class Game {
    * `lose` - the game is lost
    */
   getStatus(stat) {
-    if (stat === 'lose') {
-      const originalLoseCheck = this.loseCheck;
+    if (status === 'playing') {
+      return 'Playing...';
+    }
 
-      this.loseCheck = 0;
+    if (status === 'lose') {
+      const directions = ['Up', 'Down', 'Left', 'Right'];
+      const originalState = this.getState(); // 2D array of current board
 
-      // Tente todos os movimentos simulando sem alterar o DOM
-      this.simulateMove('up') && this.loseCheck++;
-      this.simulateMove('left') && this.loseCheck++;
-      this.simulateMove('down') && this.loseCheck++;
-      this.simulateMove('right') && this.loseCheck++;
+      for (const dir of directions) {
+        const simulated = this.simulateMove(dir, originalState);
 
-      if (this.loseCheck === 0) {
-        document.querySelector('.message-lose').classList.remove('hidden');
-
-        return 'lose';
+        if (!this.boardsAreEqual(simulated, originalState)) {
+          return; // Move is still possible, don't show loss message
+        }
       }
 
-      // Restore loseCheck if needed elsewhere
-      this.loseCheck = originalLoseCheck;
+      // No moves left — show loss
+      document.querySelector('.message-lose')?.classList.remove('hidden');
+
+      return 'Game Over!';
     }
 
     if (stat === 'won') {
