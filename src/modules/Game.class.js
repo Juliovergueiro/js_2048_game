@@ -49,7 +49,6 @@ export class Game {
 
     if (cellElement) {
       cellElement.textContent = value;
-      this.score += value;
       gameScore.textContent = this.score;
     }
 
@@ -88,6 +87,7 @@ export class Game {
       for (let i = 0; i < values.length - 1; i++) {
         if (values[i] === values[i + 1]) {
           values[i] *= 2;
+          this.score += values[i];
           values.splice(i + 1, 1);
           break;
         }
@@ -155,6 +155,7 @@ export class Game {
       for (let i = 0; i < values.length - 1; i++) {
         if (values[i] === values[i + 1]) {
           values[i] *= 2;
+          this.score += values[i];
           values.splice(i + 1, 1);
           break;
         }
@@ -219,6 +220,7 @@ export class Game {
       for (let i = 0; i < values.length - 1; i++) {
         if (values[i] === values[i + 1]) {
           values[i] *= 2;
+          this.score += values[i];
           values.splice(i + 1, 1);
           break;
         }
@@ -284,6 +286,7 @@ export class Game {
       for (let i = 0; i < values.length - 1; i++) {
         if (values[i] === values[i + 1]) {
           values[i] *= 2;
+          this.score += values[i];
           values.splice(i + 1, 1);
           break;
         }
@@ -345,7 +348,24 @@ export class Game {
   /**
    * @returns {number[][]}
    */
-  getState() {}
+  getState() {
+    const board = [];
+
+    for (let row = 0; row < 4; row++) {
+      const rowArray = [];
+
+      for (let col = 1; col <= 4; col++) {
+        const cellIndex = row * 4 + col;
+        const cell = document.querySelector(`.cell-${cellIndex}`);
+        const value = cell.textContent.trim();
+
+        rowArray.push(value === '' ? 0 : Number(value));
+      }
+      board.push(rowArray);
+    }
+
+    return board; // 2D array: [[0, 2, 0, 4], [4, 0, 0, 0], ...]
+  }
 
   /**
    * Returns the current game status.
@@ -461,6 +481,7 @@ export class Game {
         for (let i = 0; i < values.length - 1; i++) {
           if (values[i] === values[i + 1]) {
             values[i] *= 2;
+            this.score += values[i];
             values.splice(i + 1, 1);
           }
         }
